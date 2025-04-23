@@ -1,6 +1,7 @@
 import streamlit as st 
 import pandas as pd 
 from io import BytesIO
+import openpyxl
 
 st.set_page_config(page_title="data sweeper", layout="wide")
 st.title("data sweeper")
@@ -15,29 +16,29 @@ if files:
         st.subheader(f"{file.name}I- Preview")
         st.dataframe(df.head())
 
-        if st.checkbox(f"fill missing values - (file.name)"):
-            df.fillna(df.select_dtypes(include={"number"}.mean() , Inplace=True))
+        if st.checkbox(f"fill missing values - {file.name}"):
+            df.fillna(df.select_dtypes(include="number".mean() , Inplace=True))
             st.success("Missing values filled successfully!")
             st.dataframe(df.head())
 
-            selected_columns = st.multiselect(f"select colimns - {file.name}", df.columns, default=df.columns)
-            df = df[selected_culumns]
+            selected_columns = st.multiselect(f"select columns - {file.name}", df.columns, default=df.columns)
+            df = df[selected_columns]
             st.dataframe(df.head())
             if st.checkbox(f"Show Chart - {file.name}") and not df.select_dtypes(include="number").empty:
                 st.bar_chart(df.select_dtypes(include="number").iloc[:, :2])
-                format_choice = st.radio(f"covert {file.nme} to:", ["CSV", "Excel"], key=file.name)
+                format_choice = st.radio(f"convert {file.name} to:", ["CSV", "Excel"], key=file.name)
                 if st.button(f"Download {file.name} as {format_choice}"):
-                    outpuut = BytesIO()
+                    output = BytesIO()
                     if format_choice == "CSV":
                         df.to_csv(output, index=False)
-                        mine = "text/csv"
+                        mime = "text/csv"
                         new_name = file.name.replace(ext, "csv")
                     else:
                         df.to_excel(output, index=False)
                         mine = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                         new_name = file.name.replace(ext, "xlsx")
                         output.seek(0)
-                        st.download_button("Download File", file_anme=new_anme, data=output, mine=mine)
+                        st.download_button("Download File", file_name=new_name, data=output, mine=mine)
                         st.success("Processing Completed!")
                         
 
