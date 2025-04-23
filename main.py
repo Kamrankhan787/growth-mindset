@@ -17,7 +17,7 @@ if files:
         st.dataframe(df.head())
 
         if st.checkbox(f"fill missing values - {file.name}"):
-            df.fillna(df.select_dtypes(include="number".mean() , Inplace=True))
+            df.fillna(df.select_dtypes(include="number").mean(), inplace=True)
             st.success("Missing values filled successfully!")
             st.dataframe(df.head())
 
@@ -38,7 +38,7 @@ if files:
                         mine = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                         new_name = file.name.replace(ext, "xlsx")
                         output.seek(0)
-                        st.download_button("Download File", file_name=new_name, data=output, mine=mine)
+                        st.download_button("Download File", file_name=new_name, data=output, mime=mime)
                         st.success("Processing Completed!")
                         
 
